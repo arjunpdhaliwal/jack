@@ -1,9 +1,12 @@
 IMAGE = os.iso
 BIN = kernel.bin
-KERNOBJ = kernel/main.o
+KERNSRC = $(wildcard kernel/*.c)
+KERNOBJS = $(KERNSRC:.c=.o)
+ARCHSRC = $(wildcard arch/*.s)
+ARCHOBJS = $(ARCHSRC:.s=.o)
 
-FILES = mb_header.s boot.s start64.s
-BOOTOBJS = $(FILES:.s=.o)
+LIBK = libc/libk.a
+
 LINKER = linker.ld
 
 ISOFILES = isofiles
@@ -11,13 +14,12 @@ IMAGEPATH = isofiles/boot
 
 GRUBMKRESCUE = grub-mkrescue
 
-NASM = nasm
-ASM_FLAGS = -f elf64
-
 LD = ld
 LD_FLAGS = -n
 
-KERNPATH = kernel/ 
+LIBKPATH = libc/
+KERNPATH = kernel/
+ARCHPATH = arch/
 
 all : $(IMAGE)
 
@@ -25,19 +27,24 @@ $(IMAGE) : $(BIN)
 	cp $(BIN) $(IMAGEPATH)
 	$(GRUBMKRESCUE) -o $(IMAGE) $(ISOFILES)
 
-$(BIN) : $(BOOTOBJS) $(KERNOBJ)
-	$(LD) $(LD_FLAGS) -o $(BIN) -T $(LINKER) $(BOOTOBJS) $(KERNOBJ)	
+$(BIN) : $(ARCHOBJS) $(KERNOBJS)
+	$(LD) $(LD_FLAGS) -o $(BIN) -T $(LINKER) $(ARCHOBJS) $(KERNOBJS) $(LIBK)
 
-%.o : %.s
-	$(NASM) $(ASM_FLAGS) $<
+$(ARCHOBJS) :
+	cd $(ARCHPATH) && make
 
-$(KERNOBJ) : 
+$(KERNOBJS) : $(LIBK) 
 	cd $(KERNPATH) && make
+
+$(LIBK) :
+	cd $(LIBKPATH) && make
 
 .PHONY: clean
 clean:
 	rm -f *.o
-	rm -f $(IMAGEPATH)/$(BIN)
+	rm -f $(IMAGEPATH)/$(BIN)x
 	rm -f $(IMAGE)
 	rm -f $(BIN)
 	cd $(KERNPATH) && make clean
+	cd $(ARCHPATH) && make clean
+	cd $(LIBKPATH) && make clean

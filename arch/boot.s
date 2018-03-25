@@ -1,6 +1,8 @@
 ; Put together with help from https://wiki.osdev.org/Setting_Up_Long_Mode and https://os.phil-opp.com/entering-longmode/
 
 global start
+global GDT64.Data
+global stack_top
 extern start64
 
 section .text
@@ -189,5 +191,5 @@ GDT64:                           ; Global Descriptor Table (64-bit).
 
 section .bss
 stack_bottom:
-	resb 64
+	resb 4096
 stack_top:

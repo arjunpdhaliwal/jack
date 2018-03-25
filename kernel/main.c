@@ -1,5 +1,24 @@
-int main() {
-	long long int *a = 0xb8008;
-	*a = 0x2f542f532f452f54;
+#include "system.h"
+#include <sys/io.h>
+
+int kinit() {
+    sys_init();
+	writel("Initialized");
+    return 0;
+}
+
+int kmain()
+{
+	int i;
+	int j;
+
+	for (i = 0; i < HEIGHT; i++) {
+		for (j = 0; j < WIDTH; j++) {
+			video_ptr[i][j] = 0;
+		}
+	}
+	outb('A', 0xE9);
+	outb('\n', 0xE9);
+	writetest();
 	return 0;
 }

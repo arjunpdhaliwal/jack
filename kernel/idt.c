@@ -12,11 +12,6 @@ void idt_init()
     memset((void*) &idt[0], 0, sizeof(struct IDTEntry) * MAX_INTERRUPTS - 1);
     set_isrs(0x08);
 
-    //install idt
-	int a = sizeof(struct IDTEntry) + 48;
-	outb(a, 0xE9);
-	outb('\n', 0xE9);
-
     __asm__( "lidt %0" :: "m" (idtr) );
 } 
 

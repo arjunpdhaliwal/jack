@@ -19,6 +19,4 @@ start64:
     call kinit
     extern kmain
     call kmain
-    
-    int 15
     hlt

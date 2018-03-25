@@ -20,5 +20,7 @@ int kmain()
 	outb('A', 0xE9);
 	outb('\n', 0xE9);
 	writetest();
+
+	while(1) __asm__("sti; hlt");
 	return 0;
 }

@@ -2,6 +2,7 @@
 
 #include "system.h"
 #include "idt.h"
+#include "pic.h"
 
 void sys_init()
 {
@@ -9,6 +10,7 @@ void sys_init()
     video_ptr_line = 0;
     video_ptr_offset = 0;
     idt_init();
+    pic_init();
 	return;
 }
 
@@ -16,6 +18,7 @@ void writel(char *str)
 {
 	writes(str);
 	newl();
+    return;
 }
 
 void writes(char *str)
@@ -24,6 +27,7 @@ void writes(char *str)
 	{
 		writec(*str++);
 	}
+    return;
 }
 
 void writetest()
@@ -33,6 +37,7 @@ void writetest()
 	{
 		writec(*str++);
 	}
+    return;
 }
 
 void writec(char character)
@@ -47,4 +52,5 @@ void newl()
 {
 	video_ptr_line += 1;
 	video_ptr_offset = 0;
+    return;
 }

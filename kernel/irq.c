@@ -1,7 +1,9 @@
 #include "system.h"
+#include "pic.h"
 
-void irq_server()
+void irq_server(int irq)
 {
-	writel("irq");
+    
+    pic_eoi();
     return;
 }

@@ -1,8 +1,8 @@
 IMAGE = os.iso
 BIN = kernel.bin
 KERNOBJ = kernel/kernel.a
-ARCHSRC = $(wildcard arch/*.s)
-ARCHOBJS = $(ARCHSRC:.s=.o)
+BOOTSRC = $(wildcard boot/x86_64/*.s)
+BOOTOBJS = $(BOOTSRC:.s=.o)
 
 LIBK = libc/libk.a
 
@@ -18,7 +18,7 @@ LD_FLAGS = -n
 
 LIBKPATH = libc/
 KERNPATH = kernel/
-ARCHPATH = arch/
+BOOTPATH = boot/x86_64
 
 all : $(IMAGE)
 
@@ -26,11 +26,11 @@ $(IMAGE) : $(BIN)
 	cp $(BIN) $(IMAGEPATH)
 	$(GRUBMKRESCUE) -o $(IMAGE) $(ISOFILES)
 
-$(BIN) : $(ARCHOBJS) $(KERNOBJ)
-	$(LD) $(LD_FLAGS) -o $(BIN) -T $(LINKER) $(ARCHOBJS) $(KERNOBJ) $(LIBK)
+$(BIN) : $(BOOTOBJS) $(KERNOBJ)
+	$(LD) $(LD_FLAGS) -o $(BIN) -T $(LINKER) $(BOOTOBJS) $(KERNOBJ) $(LIBK)
 
-$(ARCHOBJS) :
-	cd $(ARCHPATH) && make
+$(BOOTOBJS) :
+	cd $(BOOTPATH) && make
 
 $(KERNOBJ) : $(LIBK) 
 	cd $(KERNPATH) && make
@@ -45,5 +45,5 @@ clean:
 	rm -f $(IMAGE)
 	rm -f $(BIN)
 	cd $(KERNPATH) && make clean
-	cd $(ARCHPATH) && make clean
+	cd $(BOOTPATH) && make clean
 	cd $(LIBKPATH) && make clean

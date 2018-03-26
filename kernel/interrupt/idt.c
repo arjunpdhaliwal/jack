@@ -1,5 +1,5 @@
 #include <string.h>
-#include "idt.h"
+#include <interrupt/idt.h>
 
 static struct IDTEntry idt[MAX_INTERRUPTS];
 static struct IDTr idtr;

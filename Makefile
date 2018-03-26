@@ -1,7 +1,6 @@
 IMAGE = os.iso
 BIN = kernel.bin
-KERNSRC = $(wildcard kernel/*.c)
-KERNOBJS = $(KERNSRC:.c=.o)
+KERNOBJ = kernel/kernel.a
 ARCHSRC = $(wildcard arch/*.s)
 ARCHOBJS = $(ARCHSRC:.s=.o)
 
@@ -27,13 +26,13 @@ $(IMAGE) : $(BIN)
 	cp $(BIN) $(IMAGEPATH)
 	$(GRUBMKRESCUE) -o $(IMAGE) $(ISOFILES)
 
-$(BIN) : $(ARCHOBJS) $(KERNOBJS)
-	$(LD) $(LD_FLAGS) -o $(BIN) -T $(LINKER) $(ARCHOBJS) $(KERNOBJS) $(LIBK)
+$(BIN) : $(ARCHOBJS) $(KERNOBJ)
+	$(LD) $(LD_FLAGS) -o $(BIN) -T $(LINKER) $(ARCHOBJS) $(KERNOBJ) $(LIBK)
 
 $(ARCHOBJS) :
 	cd $(ARCHPATH) && make
 
-$(KERNOBJS) : $(LIBK) 
+$(KERNOBJ) : $(LIBK) 
 	cd $(KERNPATH) && make
 
 $(LIBK) :

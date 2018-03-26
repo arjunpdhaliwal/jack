@@ -1,5 +1,5 @@
-#include "system.h"
-#include "pic.h"
+#include <system.h>
+#include <interrupt/pic.h>
 
 void irq_server(int irq)
 {

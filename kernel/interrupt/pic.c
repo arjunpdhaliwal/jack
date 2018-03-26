@@ -1,5 +1,4 @@
-
-#include "pic.h"
+#include <interrupt/pic.h>
 #include <stdint.h>
 #include <sys/io.h>
 

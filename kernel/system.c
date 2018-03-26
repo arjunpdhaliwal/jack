@@ -1,8 +1,7 @@
 #include <sys/io.h>
-
-#include "system.h"
-#include "idt.h"
-#include "pic.h"
+#include <system.h>
+#include <interrupt/idt.h>
+#include <interrupt/pic.h>
 
 void sys_init()
 {

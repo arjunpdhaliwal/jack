@@ -1,5 +1,5 @@
 *.o
-kernel/*.o
+*.a
 kernel.bin
 os.iso
 isofiles/boot/os.iso

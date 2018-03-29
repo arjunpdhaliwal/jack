@@ -1,6 +1,6 @@
 # jack
 The beginnings of a C operating system for x86_64.
-Currently boots up and triggers an interrupt, which then prints to the screen.
+Currently boots up and prints characters received from the keyboard controller to the screen.
 
 ## Resources that helped: 
 

@@ -10,12 +10,16 @@ MAINOBJS = $(MAINSRCFILES:.c=.o)
 LIBINTERRUPTPATH = ./interrupt
 LIBINTERRUPT = interrupt/interrupt.a
 
+LIBDRIVERPATH = ./driver
+LIBDRIVER = driver/driver.a
+
 KERNEL = kernel.a
 
 all : $(KERNEL)
 
-$(KERNEL) : $(MAINOBJS) $(LIBINTERRUPT)
+$(KERNEL) : $(MAINOBJS) $(LIBINTERRUPT) $(LIBDRIVER)
 	$(AR) x $(LIBINTERRUPT)
+	$(AR) x $(LIBDRIVER)
 	$(AR) rcs $(KERNEL) *.o
 
 $(MAINOBJS) :
@@ -24,8 +28,12 @@ $(MAINOBJS) :
 $(LIBINTERRUPT) :
 	cd $(LIBINTERRUPTPATH) && make
 
+$(LIBDRIVER) :
+	cd $(LIBDRIVERPATH) && make
+
 .PHONY: clean
 clean:
 	rm -f *.o
 	rm -f *.a
 	cd $(LIBINTERRUPTPATH) && make clean
+	cd $(LIBDRIVERPATH) && make clean

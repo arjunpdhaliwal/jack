@@ -1,15 +1,24 @@
 #include <sys/io.h>
 #include <system.h>
+
 #include <interrupt/idt.h>
 #include <interrupt/pic.h>
+
+#include <driver/kb.h>
 
 void sys_init()
 {
     video_ptr = (char **) VGA_TEXT_BUFFER;
     video_ptr_line = 0;
     video_ptr_offset = 0;
+
     idt_init();
+    writel("initialized idt");
     pic_init();
+    writel("initialized pic");
+
+    init_kb_driver();
+    writel("initialized kb driver");
 	return;
 }
 

@@ -17,9 +17,8 @@ int kmain()
 			video_ptr[i][j] = 0;
 		}
 	}
-	outb('A', 0xE9);
-	outb('\n', 0xE9);
-	writetest();
+	video_ptr_line = 0;
+	video_ptr_offset = 0;
 
 	while(1) __asm__("sti; hlt");
 	return 0;

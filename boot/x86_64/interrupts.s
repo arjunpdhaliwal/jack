@@ -430,8 +430,11 @@ _irq15:
 
 # Common code to handle an irq
 irq_common_stub:
-    mov rdi, [rsp]
-    mov rsi, [rsp+8]
+    push rdi
+    push rsi
+
+    mov rdi, [rsp+16]
+    mov rsi, [rsp+24]
 
     push rax
     push rbx
@@ -459,6 +462,9 @@ irq_common_stub:
     pop rcx
     pop rbx
     pop rax
+
+    pop rsi
+    pop rdi
 
     add rsp, 16
     iretq

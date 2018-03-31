@@ -106,17 +106,23 @@ static int scancode_table[] = {
 	KEY_F12			//0x58
 };
 
+int shift_held;
+int ctrl_held;
 
 int to_buffer[TO_BUF_SIZE];
 int to_buf_top;
 
 int from_buffer[FROM_BUF_SIZE];
-int from_buf_top = 0;
+int from_buf_top;
 
 void init_kb_driver()
 {
     memset((void *) to_buffer, sizeof(int), TO_BUF_SIZE - 1);
+    to_buf_top = 0;
     memset((void *) from_buffer, sizeof(int), FROM_BUF_SIZE - 1);
+    from_buf_top = 0;
+    shift_held = 0;
+    ctrl_held = 0;
     install_interrupt_handler(1, kb_interrupt_handler);
     return;
 }
@@ -151,12 +157,114 @@ void kb_interrupt_handler(int arg)
         return;
     }
 
-    uint8_t character = scancode & 0b01111111;
+    uint8_t char_index = scancode & 0b01111111;
+    int character = scancode_table[char_index];
     int release = (scancode & 0b10000000) >> 7;
 
     if (release) {
-        writec(scancode_table[character]);
+        if (character >= 0x61 && character <= 0x7a) {
+            handle_alphabetical_character(character);
+        } else if (character >= 0x30 && character <= 0x39) {
+            handle_symbol_character(character);
+        } else {
+            handle_alt_release(character);
+        }
+    } else {
+        handle_alt_press(character);
     }
     
     return;
+}
+
+void handle_alphabetical_character(character) {
+    char char_to_write;
+    if (shift_held) {
+        char_to_write = character - 0x20;
+    } else {
+        char_to_write = character;
+    }
+
+    writec(char_to_write);
+}
+
+void handle_symbol_character(character) {
+    char char_to_write;
+    if (shift_held) {
+        switch (character) {
+            case KEY_1:
+                char_to_write = '!';
+                break;
+            case KEY_2:
+                char_to_write = '@';
+                break;
+            case KEY_3:
+                char_to_write = '#';
+                break;
+            case KEY_4:
+                char_to_write = '$';
+                break;
+            case KEY_5:
+                char_to_write = '%';
+                break;
+            case KEY_6:
+                char_to_write = '^';
+                break;
+            case KEY_7:
+                char_to_write = '&';
+                break;
+            case KEY_8:
+                char_to_write = '*';
+                break;
+            case KEY_9:
+                char_to_write = '(';
+                break;
+            case KEY_0:
+                char_to_write = ')';
+                break;
+        }
+    } else {
+        char_to_write = character;
+    }
+
+    writec(char_to_write);
+}
+
+void handle_alt_release(int character)
+{
+    switch (character) {
+        case KEY_LSHIFT:
+        case KEY_RSHIFT:
+            shift_held = 0;
+            break;
+        case KEY_LCTRL:
+        case KEY_RCTRL:
+            ctrl_held = 0;
+            break;
+        case KEY_RETURN:
+            writel("enter released");
+            break;
+        case KEY_BACKSPACE:
+            writel("backspace released");
+            break;
+    }
+}
+
+void handle_alt_press(int character)
+{
+    switch (character) {
+        case KEY_LSHIFT:
+        case KEY_RSHIFT:
+            shift_held = 1;
+            break;
+        case KEY_LCTRL:
+        case KEY_RCTRL:
+            ctrl_held = 1;
+            break;
+        case KEY_RETURN:
+            writel("enter pressed");
+            break;
+        case KEY_BACKSPACE:
+            writel("backspace pressed");
+            break;
+    }
 }

@@ -1,4 +1,4 @@
-CC = ~/Downloads/cross/x86_64-elf-4.9.1-Linux-x86_64/bin/x86_64-elf-gcc
+CC = x86_64-elf-gcc
 GCC = gcc
 AR = ar
 

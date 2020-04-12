@@ -4,6 +4,7 @@ Currently boots up and prints characters received from the keyboard controller t
 
 ## Requirements
 Linux environment
+
 x86_64-elf-gcc
 
 ## Resources that helped: 
